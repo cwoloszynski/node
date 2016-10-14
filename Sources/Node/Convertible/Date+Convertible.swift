@@ -6,9 +6,17 @@ extension Date: NodeConvertible {
     }
 
     public init(node: Node, in context: Context) throws {
-        guard let date = node.date else {
+        
+        switch (node) {
+        case .date(let date):
+            self = date
+        case .string(let dateString):
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            self = dateFormatter.date(from: dateString)!
+       
+        default:
             throw NodeError.unableToConvert(node: node, expected: "\(String.self)")
         }
-        self = date
     }
 }
